@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
+import Profile from "./Profile";
 
 const HeadbarData = {
   Dashboard: {
@@ -36,10 +37,7 @@ export default function Headbar() {
           ))}
         </section>
       </section>
-      <section className="flex">
-        <Image src="" alt="" width={20} height={20} />
-        <h1 className="">Admin</h1>
-      </section>
+      <Profile />
     </main>
   );
 }
