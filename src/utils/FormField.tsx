@@ -32,7 +32,7 @@ export default function FormField({
   return (
     <main className={title ? "flex flex-col gap-[6px]" : ""}>
       {title && (
-        <label htmlFor={name} className="text-[16px] font-bold ">
+        <label htmlFor={name} className="text-[16px] text-[#5C5C5C]">
           {title}
         </label>
       )}
@@ -45,7 +45,6 @@ export default function FormField({
         }
       >
         <div className={icon ? "flex gap-3" : ""}>
-          {icon?.[0] && <div className="">{icon?.[0]}</div>}
           <input
             type={inputType}
             id={name}
@@ -58,7 +57,7 @@ export default function FormField({
             }
           />
         </div>
-        {type === "password" && icon?.[1] && (
+        {type === "password" && icon?.[0] && (
           <button type="button" onClick={handleTogglePassword} className="">
             {icon?.[1]}
           </button>
