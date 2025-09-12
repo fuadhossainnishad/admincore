@@ -4,24 +4,33 @@ import React from "react";
 const dashboardCardData = {
   "Total Users": {
     value: 12121,
-    icon: "",
+    icon: "/icons/users.svg",
     title: "12% Increase from last month",
+    status: "up",
   },
   "Active Subscription": {
     value: 12121,
-    icon: "",
+    icon: "/icons/subscription.svg",
     title: "12% Increase from last month",
+    status: "down",
   },
   "Stories Created": {
     value: 12121,
-    icon: "",
+    icon: "/icons/stories.svg",
     title: "12% Increase from last month",
+    status: "up",
   },
   "Reported Content": {
     value: 12121,
-    icon: "",
+    icon: "/icons/content.svg",
     title: "12% Increase from last month",
+    status: "down",
   },
+};
+
+const icons = {
+  down: "/icons/downArrow.svg",
+  up: "/icons/upArrow.svg",
 };
 
 export default function DashboardCard() {
@@ -32,7 +41,21 @@ export default function DashboardCard() {
           <section className="">
             <h1 className="">{key}</h1>
             <p className="">{data.value}</p>
-            <p className="">{data.title}</p>
+            <div className="flex">
+              <Image
+                src={icons[data.status as keyof typeof icons]}
+                alt={data.status}
+                height={20}
+                width={20}
+              />
+              <p
+                className={`${
+                  data.status === "up" ? "text-[#16A34A]" : "text-[#DC2626]"
+                }`}
+              >
+                {data.title}
+              </p>
+            </div>
           </section>
           <Image src={data.icon} alt={key} height={20} width={20} />
         </section>

@@ -17,7 +17,6 @@ export interface IRecentSignup {
   plan: TPlan;
 }
 
-// Sample data to display in the table
 const recentSignups: IRecentSignup[] = [
   {
     id: "1",
