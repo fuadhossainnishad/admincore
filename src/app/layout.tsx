@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { Open_Sans } from "next/font/google";
+// import { Open_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const openSans = Open_Sans({
-  variable: "--font-open-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
+
+// const openSans = Open_Sans({
+//   variable: "--font-open-sans",
+//   subsets: ["latin"],
+// });
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -29,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${openSans} antialiased`}>{children}</body>
+      <body className={`${inter} antialiased`}>{children}</body>
     </html>
   );
 }

@@ -5,8 +5,8 @@ import RecentStories from "./_components/RecentStories";
 
 export default function DashboardPage() {
   return (
-    <main className="p-[5%] h-screen flex flex-col justify-between">
-      <section className="text-[#111827]">
+    <main className="space-y-10">
+      <section className="text-[#111827] space-y-2">
         <h1 className=" font-bold text-3xl leading-9">Dashboard</h1>
         <p className="font-normal text-base leading-6">
           Welcome back! Here&apos;s what&apos;s happening with MagicTales AI
@@ -14,7 +14,7 @@ export default function DashboardPage() {
         </p>
       </section>
       <DashboardCard />
-      <section className="flex justify-between">
+      <section className="flex gap-14">
         <RecentSignup />
         <RecentStories />
       </section>
