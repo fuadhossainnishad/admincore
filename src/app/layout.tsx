@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ['400', '500']
+  weight: ["400", "500"],
 });
 
 // const openSans = Open_Sans({
@@ -25,8 +25,11 @@ const inter = Inter({
 // });
 
 export const metadata: Metadata = {
-  title: "AdminCore",
+  title: "MagicTales AI",
   description: "Developed by Fuad Hossain",
+  icons: {
+    icon: "/images/logo.png",
+  },
 };
 
 export default function RootLayout({
