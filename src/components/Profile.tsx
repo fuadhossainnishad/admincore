@@ -20,7 +20,7 @@ export default function Profile() {
       </section>
       {open && (
         <div className="absolute mt-1 min-w-max bg-black/10 backdrop-blur-sm rounded-lg px-4 py-3 flex flex-col gap-3 left-0 top-full">
-          <Link href="/reset-password" className="flex gap-2 items-center">
+          <Link href="/profile" className="flex gap-2 items-center">
             <Image src="/icons/updatePassword2.svg" alt="" height={20} width={20} />
             Update Password
           </Link>

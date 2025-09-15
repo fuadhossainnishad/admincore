@@ -8,36 +8,36 @@ export enum TPlan {
 
 export interface IRecentSignup {
   id: string;
-  name: {
+  Name: {
     photo: string;
     name: string;
   };
-  email: string;
-  date: Date;
-  plan: TPlan;
+  Email: string;
+  Date: Date;
+  Plan: TPlan;
 }
 
 const recentSignups: IRecentSignup[] = [
   {
     id: "1",
-    name: { photo: "/icons/profile.svg", name: "John Doe" },
-    email: "john@example.com",
-    date: new Date("Jan 15, 2025"),
-    plan: TPlan.PREMIUM,
+    Name: { photo: "/icons/profile.svg", name: "John Doe" },
+    Email: "john@example.com",
+    Date: new Date("Jan 15, 2025"),
+    Plan: TPlan.PREMIUM,
   },
   {
     id: "2",
-    name: { photo: "/icons/profile.svg", name: "Jane Smith" },
-    email: "jane@example.com",
-    date: new Date("2023-09-02"),
-    plan: TPlan.FREE,
+    Name: { photo: "/icons/profile.svg", name: "Jane Smith" },
+    Email: "jane@example.com",
+    Date: new Date("2023-09-02"),
+    Plan: TPlan.FREE,
   },
   {
     id: "3",
-    name: { photo: "/icons/profile.svg", name: "Alice Johnson" },
-    email: "alice@example.com",
-    date: new Date("2023-09-03"),
-    plan: TPlan.PREMIUM,
+    Name: { photo: "/icons/profile.svg", name: "Alice Johnson" },
+    Email: "alice@example.com",
+    Date: new Date("2023-09-03"),
+    Plan: TPlan.PREMIUM,
   },
 ];
 
@@ -67,20 +67,20 @@ export default function RecentSignup() {
             >
               <td className="flex items-center px-5 py-4">
                 <Image
-                  src={signup.name.photo}
-                  alt={signup.name.name}
+                  src={signup.Name.photo}
+                  alt={signup.Name.name}
                   width={36}
                   height={36}
                   className="rounded-full mr-3"
                 />
-                <h1 className="text-[#111827] font-normal text-sm leading-5">
-                  {signup.name.name}
+                <h1 className="text-[#111827] font-semibold text-sm leading-5">
+                  {signup.Name.name}
                 </h1>
               </td>
-              <td className="px-5 py-3">{signup.email}</td>
+              <td className="px-5 py-3">{signup.Email}</td>
               <td className="px-5 py-3">Jan 15, 2025</td>
               <td className="px-5 py-3">
-                {signup.plan === TPlan.PREMIUM ? (
+                {signup.Plan === TPlan.PREMIUM ? (
                   <div className="text-[#166534] font-medium text-xs rounded-2xl bg-[#DCFCE7] w-fit p-2 px-3">
                     Premium
                   </div>

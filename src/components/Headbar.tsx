@@ -11,9 +11,6 @@ const HeadbarData = {
   User: {
     path: "/users",
   },
-  Content: {
-    path: "/content",
-  },
   Report: {
     path: "/reports",
   },
@@ -41,7 +38,7 @@ export default function Headbar() {
               onClick={() => setActive(key)}
               className={`cursor-pointer font-medium text-lg ${
                 active === key ? "text-[#8B5FBF]" : "text-[#4B5563]"
-              }`}
+              } hover:underline hover:underline-offset-8 hover:decoration-2 hover:decoration-[#8B5FBF]`}
             >
               {key}
             </Link>

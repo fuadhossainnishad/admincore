@@ -100,7 +100,7 @@ export default function LoginForm() {
         <div className="flex items-center space-x-2">
           <Checkbox
             id="remember"
-            className="h-4 w-4 rounded border-gray-300 text-green-600 data-[state=checked]:bg-gradient-to-b from-[#4F9F4F] to-[#08692C] data-[state=checked]:border-[#08692C]"
+            className="h-4 w-4 rounded border-gray-300 text-white data-[state=checked]:bg-[#9333EA] data-[state=checked]:border-[#08692C]"
           />
           <label htmlFor="remember" className="text-sm text-gray-600">
             Remember Password

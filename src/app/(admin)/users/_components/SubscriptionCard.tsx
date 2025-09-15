@@ -1,0 +1,67 @@
+import Image from "next/image";
+import React from "react";
+
+const subscriptionCardData = {
+  "Total Subscribers": {
+    value: "12,121",
+    icon: "/icons/users.svg",
+    title: "+12% from last month",
+    status: "up",
+  },
+  "Trials Active": {
+    value: "12,121",
+    icon: "/icons/trialSubscription.svg",
+    title: "48 expiring this week",
+    status: "trial",
+  },
+  "Canceled Subscriptions": {
+    value: "12,121",
+    icon: "/icons/cancelSubscription.svg",
+    title: "+12% from last month",
+    status: "up",
+  },
+};
+
+const icons = {
+  down: "/icons/downArrow.svg",
+  up: "/icons/upArrow.svg",
+  trial: "/icons/expire.svg",
+};
+
+export default function SubscriptionCard() {
+  return (
+    <main className="flex gap-10">
+      {Object.entries(subscriptionCardData).map(([key, data], ind) => (
+        <section
+          key={ind}
+          className="grow rounded-xl border-[1px] border-[#E5E7EB] bg-white p-8 flex justify-between gap-12"
+        >
+          <section className="space-y-3">
+            <h1 className="ext-base font-normal text-[#4B5563]">{key}</h1>
+            <p className="text-4xl font-bold leading-9">{data.value}</p>
+            <div className="flex gap-1">
+              <Image
+                src={icons[data.status as keyof typeof icons]}
+                alt={data.status}
+                height={12}
+                width={14}
+              />
+              <p
+                className={`${
+                  data.status === "up"
+                    ? "text-[#16A34A]"
+                    : data.status === "expire"
+                    ? "text:[#EA580C]"
+                    : "text-[#DC2626]"
+                } text-base font-normal leading-5`}
+              >
+                {data.title}
+              </p>
+            </div>
+          </section>
+          <Image src={data.icon} alt={key} height={52} width={52} />
+        </section>
+      ))}
+    </main>
+  );
+}

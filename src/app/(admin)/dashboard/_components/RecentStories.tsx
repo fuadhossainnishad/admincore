@@ -7,34 +7,34 @@ export enum TStatus {
 
 export interface IRecentStories {
   id: string;
-  title: string;
-  creator: string;
-  date: Date;
-  status: TStatus;
+  Title: string;
+  Creator: string;
+  Date: Date;
+  Status: TStatus;
 }
 
 // Sample data to display in the table
 const recentStories: IRecentStories[] = [
   {
     id: "1",
-    title: "New Story on React",
-    creator: "John Doe",
-    date: new Date("2023-09-01"),
-    status: TStatus.PUBLISHED,
+    Title: "New Story on React",
+    Creator: "John Doe",
+    Date: new Date("2023-09-01"),
+    Status: TStatus.PUBLISHED,
   },
   {
     id: "2",
-    title: "JavaScript for Beginners",
-    creator: "John Doe",
-    date: new Date("2023-09-02"),
-    status: TStatus.PENDING,
+    Title: "JavaScript for Beginners",
+    Creator: "John Doe",
+    Date: new Date("2023-09-02"),
+    Status: TStatus.PENDING,
   },
   {
     id: "3",
-    title: "Understanding TypeScript",
-    creator: "John Doe",
-    date: new Date("2023-09-03"),
-    status: TStatus.PUBLISHED,
+    Title: "Understanding TypeScript",
+    Creator: "John Doe",
+    Date: new Date("2023-09-03"),
+    Status: TStatus.PUBLISHED,
   },
 ];
 
@@ -63,14 +63,14 @@ export default function RecentStories() {
               className="hover:bg-[#F3F4F6] border-b border-b-[#E5E7EB]"
             >
               <td className="flex items-center px-5 py-4">
-                <h1 className="text-[#111827] font-medium text-sm leading-5">
-                  {stories.title}
+                <h1 className="text-[#111827] font-semibold text-sm leading-5">
+                  {stories.Title}
                 </h1>
               </td>
-              <td className="px-5 py-3">{stories.creator}</td>
+              <td className="px-5 py-3">{stories.Creator}</td>
               <td className="px-5 py-3">Jan 15, 2025</td>
               <td className="px-5 py-3">
-                {stories.status === TStatus.PUBLISHED ? (
+                {stories.Status === TStatus.PUBLISHED ? (
                   <div className="text-[#166534] font-medium text-xs rounded-2xl bg-[#DCFCE7] w-fit p-2 px-3">
                     Published
                   </div>

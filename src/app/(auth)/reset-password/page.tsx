@@ -18,10 +18,11 @@ export default function ResetPasswordPage() {
       >
         <Image
           key="email"
-          src="/assets/icons/leftArrow.svg"
+          src="/icons/downArrow.svg"
           alt="email"
           width={12}
           height={12}
+          className="rotate-90"
         />
         <div>Back to log in</div>
       </Link>
