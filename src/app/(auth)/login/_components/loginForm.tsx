@@ -24,7 +24,7 @@ export default function LoginForm() {
   const onSubmit = async (data: FieldValues) => {
     console.log("Email:", data.email);
     console.log("Password:", data.password);
-    router.push("/dashboard");
+    // router.push("/dashboard");
 
     const res = await apiCall(TMethods.post, apiList.login, data);
     console.log(res);
@@ -34,7 +34,9 @@ export default function LoginForm() {
       return;
     }
 
-    sessionStorage.setItem("token", res.data.token);
+    sessionStorage.setItem("token", res.data.access);
+    console.log(res.data.access);
+
     toast.success("Signed in successfully");
     router.push("/dashboard");
   };

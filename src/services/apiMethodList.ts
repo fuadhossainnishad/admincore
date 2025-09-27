@@ -1,4 +1,5 @@
 import axiosInstance from "@/config/axios.config";
+import { AxiosHeaders } from "axios";
 
 export enum TMethods {
     post = 'post',
@@ -11,7 +12,8 @@ export enum TMethods {
 const apiCall = async <T>(
     method: TMethods,
     url: string,
-    data: T
+    data?: T,
+    header?: AxiosHeaders
 ) => {
     console.log(data);
 
@@ -22,6 +24,7 @@ const apiCall = async <T>(
             data,
             headers: {
                 "Content-Type": "application/json",
+                ...header
             },
         }
     );
