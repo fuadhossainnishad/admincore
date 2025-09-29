@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 export enum TPlan {
   PREMIUM = "premium",
@@ -41,7 +41,8 @@ const recentSignups: IRecentSignup[] = [
   },
 ];
 
-export default function RecentSignup({ signup }: { signup: IRecentSignup[] }) {
+export default function RecentSignup({ sign }: { sign: IRecentSignup[] }) {
+  const [signup, setSignup] = useState(sign || recentSignups);
   return (
     <main className="border-[1px] border-[#E5E7EB] rounded-xl grow">
       <h2 className="text-lg font-semibold leading-7 bg-white p-5 rounded-xl w-full">
@@ -50,7 +51,7 @@ export default function RecentSignup({ signup }: { signup: IRecentSignup[] }) {
       <table className="w-full table-fixed text-left text-sm border-[#E5E7EB] ">
         <thead>
           <tr className="bg-[#E5E7EB] text-[#6B7280]">
-            {Object.entries(signup[0]!)
+            {Object.entries(signup[0])
               .filter(([key]) => key !== "id")
               .map(([key], ind) => (
                 <th className="px-5 py-3" key={ind}>

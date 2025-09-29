@@ -1,3 +1,5 @@
 export const config = {
   serverUrl: process.env.NEXT_PUBLIC_SERVER_URL,
 };
+
+console.log("Server URL from config:", config.serverUrl); 

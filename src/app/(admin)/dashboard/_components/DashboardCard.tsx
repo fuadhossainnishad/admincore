@@ -1,39 +1,36 @@
-import Image from "next/image";
 import React from "react";
+import Image from "next/image";
+import { IStats } from "../interface";
 
-const dashboardCardData = {
-  "Total Users": {
-    value: "12,121",
-    icon: "/icons/users.svg",
-    title: "+12% from last month",
-    status: "up",
-  },
-  "Active Subscription": {
-    value: "12,121",
-    icon: "/icons/subscription.svg",
-    title: "-12% from last month",
-    status: "down",
-  },
-  "Stories Created": {
-    value: "12,121",
-    icon: "/icons/stories.svg",
-    title: "+12% from last month",
-    status: "up",
-  },
-  "Reported Content": {
-    value: "12,121",
-    icon: "/icons/content.svg",
-    title: "-12% from last month",
-    status: "down",
-  },
-};
+export default function DashboardCard({ stats }: { stats: IStats }) {
+  const dashboardCardData = {
+    "Total Users": {
+      value: stats.total_users?.value || 0,
+      title: `${stats.total_users?.change || 0}% from last month`,
+      status: stats.total_users?.change > 0 ? "up" : "down",
+    },
+    "Active Subscription": {
+      value: stats.active_subscriptions?.value || 0,
+      title: `${stats.active_subscriptions?.change || 0}% from last month`,
+      status: stats.active_subscriptions?.change > 0 ? "up" : "down",
+    },
+    "Stories Created": {
+      value: stats.stories_created?.value || 0,
+      title: `${stats.stories_created?.change || 0}% from last month`,
+      status: stats.stories_created?.change > 0 ? "up" : "down",
+    },
+    "Reported Content": {
+      value: stats.reported_content?.value || 0,
+      title: `${stats.reported_content?.change || 0}% from last month`,
+      status: stats.reported_content?.change > 0 ? "up" : "down",
+    },
+  };
 
-const icons = {
-  down: "/icons/downArrow.svg",
-  up: "/icons/upArrow.svg",
-};
+  const icons = {
+    down: "/icons/downArrow.svg",
+    up: "/icons/upArrow.svg",
+  };
 
-export default function DashboardCard() {
   return (
     <main className="flex justify-between">
       {Object.entries(dashboardCardData).map(([key, data], ind) => (
@@ -42,7 +39,7 @@ export default function DashboardCard() {
           className="rounded-xl border-[1px] border-[#E5E7EB] bg-white p-8 flex justify-between gap-12"
         >
           <section className="space-y-3">
-            <h1 className="ext-base font-normal text-[#4B5563]">{key}</h1>
+            <h1 className="text-base font-normal text-[#4B5563]">{key}</h1>
             <p className="text-4xl font-bold leading-9">{data.value}</p>
             <div className="flex">
               <Image
@@ -60,7 +57,7 @@ export default function DashboardCard() {
               </p>
             </div>
           </section>
-          <Image src={data.icon} alt={key} height={52} width={52} />
+          <Image src={`/icons/${key.toLowerCase().replace(/\s+/g, '-')}.svg`} alt={key} height={52} width={52} />
         </section>
       ))}
     </main>

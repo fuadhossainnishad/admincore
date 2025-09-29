@@ -6,42 +6,55 @@ import RecentStories from "./_components/RecentStories";
 import apiCall, { TMethods } from "@/services/apiMethodList";
 import apiList from "@/services/apiList";
 import { toast } from "sonner";
-import { AxiosHeaders } from "axios";
+import { AxiosHeaders } from "axios"; // Import the interfaces
+import { IRecentSignup, IRecentStory, IStats } from "./interface";
 
 export default function DashboardPage() {
-  const [stat, setStat] = useState({});
+  const [stat, setStat] = useState<IStats>({
+    total_users: { value: 0, change: 0 },
+    active_subscriptions: { value: 0, change: 0 },
+    stories_created: { value: 0, change: 0 },
+    reported_content: { value: 0, change: 0 },
+  });
+  const [recentSignups, setRecentSignups] = useState<IRecentSignup[]>([]);
+  const [recentStories, setRecentStories] = useState<IRecentStory[]>([]);
 
-  const handleFecth = async () => {
+  const handleFetch = async () => {
     const token = sessionStorage.getItem("token");
     const headers = AxiosHeaders.from({
       Authorization: `Bearer ${token}`,
     });
 
     const res = await apiCall(TMethods.get, apiList.stats, {}, headers);
-    if (!res.success) {
+    if (res.success) {
+      setStat(res.data.stats || stat); // Use the existing stat if the data is missing
+      setRecentSignups(res.data.recent_signups || []); // Use an empty array if data is missing
+      setRecentStories(res.data.recent_stories || []); // Use an empty array if data is missing
+      toast.success("Dashboard data fetched successfully");
+    } else {
       toast.error("Error fetching dashboard data");
     }
-    toast.success("Successfully fetch dashboard");
-    setStat(res.data);
   };
 
   useEffect(() => {
-    handleFecth();
-  });
+    handleFetch();
+  }, []);
 
   return (
     <main className="space-y-10">
       <section className="text-[#111827] space-y-2">
-        <h1 className=" font-bold text-3xl leading-9">Dashboard</h1>
+        <h1 className="font-bold text-3xl leading-9">Dashboard</h1>
         <p className="font-normal text-base leading-6">
           Welcome back! Here&apos;s what&apos;s happening with MagicTales AI
           today.
         </p>
       </section>
-      <DashboardCard />
+
+      <DashboardCard stats={stat} />
+
       <section className="flex gap-14">
-        <RecentSignup />
-        <RecentStories />
+        <RecentSignup signups={recentSignups} />
+        <RecentStories stories={recentStories} />
       </section>
     </main>
   );
