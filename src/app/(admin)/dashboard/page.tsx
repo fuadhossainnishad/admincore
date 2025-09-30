@@ -26,6 +26,7 @@ export default function DashboardPage() {
     });
 
     const res = await apiCall(TMethods.get, apiList.stats, {}, headers);
+    console.log(res);
     if (res.success) {
       setStat(res.data.stats || stat); // Use the existing stat if the data is missing
       setRecentSignups(res.data.recent_signups || []); // Use an empty array if data is missing
