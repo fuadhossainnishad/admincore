@@ -29,8 +29,8 @@ export default function DashboardPage() {
     console.log(res);
     if (res.success) {
       setStat(res.data.stats || stat); // Use the existing stat if the data is missing
-      setRecentSignups(res.data.recent_signups || []); // Use an empty array if data is missing
-      setRecentStories(res.data.recent_stories || []); // Use an empty array if data is missing
+      setRecentSignups(res.data.recent_signups.results || []);
+      setRecentStories(res.data.recent_stories.results || []);
       toast.success("Dashboard data fetched successfully");
     } else {
       toast.error("Error fetching dashboard data");
@@ -54,7 +54,7 @@ export default function DashboardPage() {
       <DashboardCard stats={stat} />
 
       <section className="flex gap-14">
-        <RecentSignup signups={recentSignups} />
+        <RecentSignup sign={recentSignups} />
         <RecentStories stories={recentStories} />
       </section>
     </main>

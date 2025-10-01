@@ -18,19 +18,20 @@ export interface IStats {
 }
 
 export interface IRecentSignup {
-    _id: string;
+    id: string;
     name: string;
-    Email: string;
-    Date: string;
-    Plan: "free" | "premium" | "trial";
+    email: string;
+    date: string;
+    plan: string;
+    profile_picture_url: string
 }
 
 export interface IRecentStory {
-    _id: string;
-    Title: string;
-    Creator: string;
-    Date: string;
-    Status: "Published" | "Pending";
+    id: string;
+    title: string;
+    creator: string;
+    date: string;
+    status: "Published" | "Pending";
 }
 
 export interface IDashboardResponse {

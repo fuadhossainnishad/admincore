@@ -5,11 +5,12 @@ const apiList = {
     verifyOtp: "/auth/verify_otp",
     resetPassword: "/auth/reset_password",
     updatePassword: "/auth/update_password",
-    settings: "/settings",
     subscription: "/subscription",
-    track: "/track",
-    user: "/user",
-    stats: '/dashboard/stats/'
+    stats: '/dashboard/stats/',
+    user: '/dashboard/subscriptions/',
+    reports: '/dashboard/reports/',
+    settings: ' /dashboard/settings/',
+
 }
 
 export default apiList
