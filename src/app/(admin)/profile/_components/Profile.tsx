@@ -13,13 +13,9 @@ import apiList from "@/services/apiList";
 import { AxiosHeaders } from "axios";
 
 export default function Profile() {
-  const token = sessionStorage.getItem("token");
-  const headers = AxiosHeaders.from({
-    Authorization: `Bearer ${token}`,
-  });
-
   const [activeTab, setActiveTab] = useState("profile");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const [profile, setProfile] = useState({
     first_name: "",
     last_name: "",
@@ -34,29 +30,38 @@ export default function Profile() {
     confirm_password: "",
   });
 
-  const handleFetchProfile = async () => {
-    try {
-      const res = await apiCall(TMethods.get, apiList.getProfile, {}, headers);
-      if (res.success) {
-        setProfile({
-          first_name: res.data.first_name || "",
-          last_name: res.data.last_name || "",
-          email: res.data.email || "",
-          phone_number: res.data.phone_number || "",
-          profile_picture_url:
-            res.data.profile_picture_url || "/icons/profile.svg",
-        });
-        toast.success("Profile data fetched successfully");
-      } else {
-        toast.error("Error fetching profile data");
-      }
-    } catch (err) {
-      toast.error("Something went wrong.");
-      console.error(err);
-    }
-  };
-
   useEffect(() => {
+    setIsClient(true);
+    const token = sessionStorage.getItem("token");
+    const headers = AxiosHeaders.from({
+      Authorization: `Bearer ${token}`,
+    });
+    const handleFetchProfile = async () => {
+      try {
+        const res = await apiCall(
+          TMethods.get,
+          apiList.getProfile,
+          {},
+          headers
+        );
+        if (res.success) {
+          setProfile({
+            first_name: res.data.first_name || "",
+            last_name: res.data.last_name || "",
+            email: res.data.email || "",
+            phone_number: res.data.phone_number || "",
+            profile_picture_url:
+              res.data.profile_picture_url || "/icons/profile.svg",
+          });
+          toast.success("Profile data fetched successfully");
+        } else {
+          toast.error("Error fetching profile data");
+        }
+      } catch (err) {
+        toast.error("Something went wrong.");
+        console.error(err);
+      }
+    };
     handleFetchProfile();
   }, []);
 
@@ -80,6 +85,10 @@ export default function Profile() {
   };
 
   const handleSaveProfile = async () => {
+    const token = sessionStorage.getItem("token");
+    const headers = AxiosHeaders.from({
+      Authorization: `Bearer ${token}`,
+    });
     try {
       const formData = new FormData();
 
@@ -134,7 +143,6 @@ export default function Profile() {
           profile_picture_url:
             res.data.profile_picture_url || profile.profile_picture_url,
         });
-        handleFetchProfile();
       } else {
         toast.error("Failed to update profile");
       }
@@ -144,6 +152,7 @@ export default function Profile() {
     }
   };
 
+  if (!isClient) return null;
   return (
     <div className="px-4 py-8">
       <div className="flex flex-col items-center text-center space-y-2">

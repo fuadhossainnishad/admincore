@@ -1,5 +1,6 @@
-"use client";
-import React, { useEffect, useState } from "react";
+"use client"; // This ensures the code is treated as a client-side component
+
+import React, { useState, useEffect } from "react";
 import DashboardCard from "./_components/DashboardCard";
 import RecentSignup from "./_components/RecentSignup";
 import RecentStories from "./_components/RecentStories";
@@ -18,28 +19,34 @@ export default function DashboardPage() {
   });
   const [recentSignups, setRecentSignups] = useState<IRecentSignup[]>([]);
   const [recentStories, setRecentStories] = useState<IRecentStory[]>([]);
+  const [isClient, setIsClient] = useState(false); // Track if the component is mounted on the client-side
 
-  const handleFetch = async () => {
+  // Only access sessionStorage when the component is mounted on the client-side
+  useEffect(() => {
+    setIsClient(true); // Set isClient to true once the component is mounted on the client
+
+    // Fetch the token from sessionStorage only on the client-side
     const token = sessionStorage.getItem("token");
     const headers = AxiosHeaders.from({
       Authorization: `Bearer ${token}`,
     });
 
-    const res = await apiCall(TMethods.get, apiList.stats, {}, headers);
-    console.log(res);
-    if (res.success) {
-      setStat(res.data.stats || stat); // Use the existing stat if the data is missing
-      setRecentSignups(res.data.recent_signups.results || []);
-      setRecentStories(res.data.recent_stories.results || []);
-      toast.success("Dashboard data fetched successfully");
-    } else {
-      toast.error("Error fetching dashboard data");
-    }
-  };
+    const handleFetch = async () => {
+      const res = await apiCall(TMethods.get, apiList.stats, {}, headers);
+      if (res.success) {
+        setStat(res.data.stats || stat); // Use the existing stat if the data is missing
+        setRecentSignups(res.data.recent_signups.results || []);
+        setRecentStories(res.data.recent_stories.results || []);
+        toast.success("Dashboard data fetched successfully");
+      } else {
+        toast.error("Error fetching dashboard data");
+      }
+    };
 
-  useEffect(() => {
     handleFetch();
-  }, []);
+  }, [stat]); // Dependencies should include the stat to re-run the fetch if needed
+
+  if (!isClient) return null; // Ensure that the page does not render on the server
 
   return (
     <main className="space-y-10">

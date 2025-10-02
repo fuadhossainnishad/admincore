@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Pagination from "@/components/Pagination";
 import SubscriptionCard from "./_components/SubscriptionCard";
 import SubscriptionTable from "./_components/SubscriptionTable";
 import SearchFilter from "./_components/SearchFilter";
@@ -8,19 +7,6 @@ import { AxiosHeaders } from "axios";
 import apiCall, { TMethods } from "@/services/apiMethodList";
 import apiList from "@/services/apiList";
 import { toast } from "sonner";
-
-export enum TPlan {
-  PREMIUM = "Trial Period",
-  FAMILY = "Trial Period1",
-  FREE = "Trial Period2",
-}
-
-// Enum for subscription status
-export enum TStatus {
-  ACTIVE = "Active",
-  TRIAL = "Trial",
-  CANCELED = "Canceled",
-}
 
 // Interface for subscription statistics
 export interface IStats {
@@ -38,7 +24,6 @@ export interface IStats {
   };
 }
 
-// Interface for individual subscription details
 export interface ISubscription {
   id: string;
   "User Name": {
@@ -46,26 +31,28 @@ export interface ISubscription {
     name: string;
     email: string;
   };
-  "Current Plan": TPlan;
+  "Current Plan": string;
   "Renewal Date": string;
   "Payment Method": {
     cardType: string;
     transactionId: string;
   };
-  status: TStatus;
+  status: string;
 }
 
-// Component for handling API call and displaying subscriptions
 export default function UsersPage() {
   const [stat, setStat] = useState<IStats>({
     total_subscribers: { value: 0, change: 0 },
     trials_active: { value: 0, expiring_this_week: 0 },
     canceled_subscriptions: { value: 0, change: 0 },
   });
-  
-  const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]); // Initialize as an empty array
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const itemsPerPage = 5; // Set the number of items per page
+  const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState<
+    ISubscription[]
+  >([]);
+
+  const [selectedPlan, setSelectedPlan] = useState<string>("All Plans");
+  const [selectedStatus, setSelectedStatus] = useState<string>("All Status");
 
   const handleFetch = async () => {
     const token = sessionStorage.getItem("token");
@@ -73,12 +60,15 @@ export default function UsersPage() {
       Authorization: `Bearer ${token}`,
     });
 
-    const res = await apiCall(TMethods.get, apiList.reports, {}, headers);
+    const res = await apiCall(TMethods.get, apiList.user, {}, headers);
+
+    console.log(res);
+    
 
     if (res.success) {
-      setStat(res.data.stats); // Set stats data
-      // Ensure 'results' is always an array
-      setSubscriptions(res.data.results || []); // If data is missing, set an empty array
+      setStat(res.data.stats); 
+      setSubscriptions(res.data.results || []);
+      setFilteredSubscriptions(res.data.results || []);
       toast.success("Subscription data fetched successfully");
     } else {
       toast.error("Error fetching subscription data");
@@ -89,8 +79,28 @@ export default function UsersPage() {
     handleFetch();
   }, []);
 
-  // Guard clause: Ensure subscriptions is an array
-  const currentSubscriptions = Array.isArray(subscriptions) ? subscriptions : [];
+  // Search filter handler
+  const handleSearch = (searchQuery: string) => {
+    const searchResults = subscriptions.filter((sub) =>
+      sub["User Name"].name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredSubscriptions(searchResults);
+  };
+
+  // Filter subscriptions based on selected plan and status
+  useEffect(() => {
+    const handleFilterChange = () => {
+      const filteredData = subscriptions.filter((sub) => {
+        const matchesPlan =
+          selectedPlan === "All Plans" || sub["Current Plan"] === selectedPlan;
+        const matchesStatus =
+          selectedStatus === "All Status" || sub.status === selectedStatus;
+        return matchesPlan && matchesStatus;
+      });
+      setFilteredSubscriptions(filteredData);
+    };
+    handleFilterChange();
+  }, [selectedPlan, selectedStatus, subscriptions]);
 
   return (
     <main className="space-y-10">
@@ -103,24 +113,15 @@ export default function UsersPage() {
         </p>
       </section>
 
-      {/* Subscription Card Component */}
       <SubscriptionCard stats={stat} />
-
-      {/* Search Filter Component */}
-      <SearchFilter />
-
-      {/* Subscription Table Component */}
-      <SubscriptionTable subscriptions={currentSubscriptions} />
-
-      {/* Pagination Component */}
-      {/* 
-        <Pagination
-          currentPage={currentPage}
-          totalItems={subscriptions.length} // Make sure subscriptions is an array
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
-        />
-      */}
+      <SearchFilter
+        handleSearch={handleSearch}
+        selectedPlan={selectedPlan}
+        setSelectedPlan={setSelectedPlan}
+        selectedStatus={selectedStatus}
+        setSelectedStatus={setSelectedStatus}
+      />
+      <SubscriptionTable subscriptions={filteredSubscriptions} />
     </main>
   );
 }

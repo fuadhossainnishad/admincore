@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import AdminSettingsCard from "./_components/AdminSettingsCard";
 import apiCall, { TMethods } from "@/services/apiMethodList";
 import apiList from "@/services/apiList";
@@ -9,9 +9,10 @@ import Image from "next/image";
 
 export interface ISettings {
   application_name: string;
-  application_logo_url: string;
+  application_logo_url: string; // URL of the logo
   default_language: string;
   timezone: string;
+  logoFile?: File | null; // Optional logo file (if a new file is uploaded)
 }
 
 export default function SettingsPage() {
@@ -20,69 +21,36 @@ export default function SettingsPage() {
     application_logo_url: "",
     default_language: "",
     timezone: "",
+    logoFile: null, // Initially no file selected
   });
 
-  const [languages, setLanguages] = useState<{ code: string; name: string }[]>(
-    []
-  );
+  const [languages, setLanguages] = useState<{ code: string; name: string }[]>([]);
   const [timezones, setTimezones] = useState<string[]>([]);
 
-  const token = sessionStorage.getItem("token");
-  const headers = AxiosHeaders.from({
-    Authorization: `Bearer ${token}`,
-  });
-
-  const handleFetch = async () => {
-    try {
-      const res = await apiCall(TMethods.get, apiList.settings, {}, headers);
-      if (res.success) {
-        setValue(res.data);
-        toast.success("Settings data fetched successfully");
-      } else {
-        toast.error("Error fetching settings data");
-      }
-
-      const languagesRes = await apiCall(
-        TMethods.get,
-        apiList.languages,
-        {},
-        headers
-      );
-      if (languagesRes.success) {
-        setLanguages(languagesRes.data);
-      } else {
-        toast.error("Error fetching languages");
-      }
-
-      const timezonesRes = await apiCall(
-        TMethods.get,
-        apiList.timezone,
-        {},
-        headers
-      );
-      if (timezonesRes.success) {
-        setTimezones(timezonesRes.data);
-      } else {
-        toast.error("Error fetching timezones");
-      }
-    } catch (err) {
-      toast.error("Error fetching data");
-      console.error(err);
-    }
-  };
-
-  const handleUpdate = async (updatedData: ISettings) => {
+  // Handle Update function to update the settings
+  const handleUpdate = async (
+    updatedData: ISettings,
+    logoFile: File | null
+  ) => {
     const token = sessionStorage.getItem("token");
     const headers = AxiosHeaders.from({
       Authorization: `Bearer ${token}`,
     });
 
     const formData = new FormData();
+
+    // Append basic application data
     formData.append("application_name", updatedData.application_name);
-    formData.append("application_logo_url", updatedData.application_logo_url);
     formData.append("default_language", updatedData.default_language);
     formData.append("timezone", updatedData.timezone);
-    console.log("FormData", formData);
+
+    // If a new logo file is selected, append it to FormData
+    if (logoFile) {
+      formData.append("application_logo_url", logoFile);
+    } else {
+      // Use the existing logo URL if no new file is selected
+      formData.append("application_logo_url", updatedData.application_logo_url);
+    }
 
     try {
       const res = await apiCall(
@@ -105,7 +73,53 @@ export default function SettingsPage() {
     }
   };
 
+  // Fetch data when the component mounts
   useEffect(() => {
+    const handleFetch = async () => {
+      const token = sessionStorage.getItem("token");
+      const headers = AxiosHeaders.from({
+        Authorization: `Bearer ${token}`,
+      });
+
+      try {
+        const res = await apiCall(TMethods.get, apiList.settings, {}, headers);
+        if (res.success) {
+          setValue(res.data); // Set the received data (including application_logo_url as a string)
+          toast.success("Settings data fetched successfully");
+        } else {
+          toast.error("Error fetching settings data");
+        }
+
+        // Fetch languages and timezones as before
+        const languagesRes = await apiCall(
+          TMethods.get,
+          apiList.languages,
+          {},
+          headers
+        );
+        if (languagesRes.success) {
+          setLanguages(languagesRes.data);
+        } else {
+          toast.error("Error fetching languages");
+        }
+
+        const timezonesRes = await apiCall(
+          TMethods.get,
+          apiList.timezone,
+          {},
+          headers
+        );
+        if (timezonesRes.success) {
+          setTimezones(timezonesRes.data);
+        } else {
+          toast.error("Error fetching timezones");
+        }
+      } catch (err) {
+        toast.error("Error fetching data");
+        console.error(err);
+      }
+    };
+
     handleFetch();
   }, []);
 
@@ -136,9 +150,9 @@ export default function SettingsPage() {
         <button
           type="submit"
           className="cursor-pointer bg-[#9333EA] px-5 py-3 rounded-lg text-white flex items-center gap-1"
-          // onClick={handleUpdate}
+          onClick={() => handleUpdate(value, value.logoFile!)} // Pass updated data and logoFile
         >
-          <Image src="/icons/save.svg" alt="settings" height={14} width={14} />{" "}
+          <Image src="/icons/save.svg" alt="settings" height={14} width={14} />
           Save Settings
         </button>
       </section>

@@ -1,29 +1,34 @@
-"use client";
-import React from "react";
+"use client"; // Ensure this component is treated as a client-side component
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function VerifyOtpPage() {
-  const email = sessionStorage.getItem("email");
+  const [email, setEmail] = useState<string | null>(null);
+
+  // Only access sessionStorage after the component is mounted on the client-side
+  useEffect(() => {
+    const storedEmail = sessionStorage.getItem("email");
+    setEmail(storedEmail);
+  }, []);
+
+  if (email === null) {
+    return <div>Loading...</div>; // You can display a loading state while the email is being fetched
+  }
+
   return (
     <main className="flex flex-col items-center gap-8 text-[#5C5C5C]">
       <div className="space-y-5 text-center w-full flex flex-col items-center">
         <h1 className="text-2xl font-bold text-[#103F73]">Check your email</h1>
         <h2 className="text-sm font-normal w-[60%]">
-          We’ve sent a reset password link to your email <span className="text-blue-500">{email}</span>.
-          Please check your inbox and follow the instructions to reset your
-          password.
+          We’ve sent a reset password link to your email{" "}
+          <span className="text-blue-500">{email}</span>. Please check your inbox
+          and follow the instructions to reset your password.
         </h2>
       </div>
 
       {/* <VerifyOtpForm /> */}
-
-      {/* <div className="flex gap-1 text-[14px] font-normal leading-5">
-        <p className="">Didn’t receive the email?</p>
-        <button className="cursor-pointer text-[#103F73]">
-          Click to resend
-        </button>
-      </div> */}
 
       <Link
         href="/forgot-password"

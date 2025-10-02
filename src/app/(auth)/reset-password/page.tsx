@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import ResetPasswordForm from "./_components/resetPasswordForm";
+// import ResetPasswordForm from "./_components/resetPasswordForm";
 import Image from "next/image";
 
 export default function ResetPasswordPage() {
@@ -11,7 +11,7 @@ export default function ResetPasswordPage() {
           Reset Password
         </h1>
       </div>
-      <ResetPasswordForm />
+      {/* <ResetPasswordForm /> */}
       <Link
         href="/login"
         className="flex gap-2 leading-5 font-normal text-sm text-[#667085]"

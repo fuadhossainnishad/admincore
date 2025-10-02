@@ -1,3 +1,5 @@
+"use client"; // Ensure the page is client-side rendered
+
 import React from "react";
 import Profile from "./_components/Profile";
 
