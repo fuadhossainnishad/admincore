@@ -50,12 +50,12 @@ export default function SearchFilter({
       </section>
 
       <section className="relative border-[1px] border-[#E5E7EB] rounded-xl p-4">
-        <div className="flex cursor-pointer" onClick={() => setShowPlanList(!showPlanList)}>
+        <div className="flex gap-6 cursor-pointer" onClick={() => setShowPlanList(!showPlanList)}>
           <div className="text-[#000000] text-base leading-6 font-normal grow">{selectedPlan}</div>
           <Image src="/icons/downArrow3.svg" alt="downArrow" height={16} width={16} />
         </div>
         {showPlanList && plansWithAll.length > 0 && (
-          <ul className="absolute z-10 w-[90%] mt-1 max-h-48 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-md">
+          <ul className="absolute z-10 w-full mt-1 overflow-y-auto  bg-white border border-gray-200 rounded-lg shadow-md">
             {plansWithAll.map((plan, index) => (
               <li
                 key={index}
@@ -70,12 +70,12 @@ export default function SearchFilter({
       </section>
 
       <section className="relative border-[1px] border-[#E5E7EB] rounded-xl p-4">
-        <div className="flex cursor-pointer" onClick={() => setShowStatusList(!showStatusList)}>
+        <div className="flex gap-6 cursor-pointer" onClick={() => setShowStatusList(!showStatusList)}>
           <div className="text-[#ADAEBC] text-base leading-6 font-normal grow">{selectedStatus}</div>
           <Image src="/icons/downArrow3.svg" alt="search" height={16} width={16} />
         </div>
         {showStatusList && statusList.length > 0 && (
-          <ul className="absolute z-10 w-[90%] mt-1 max-h-48 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-md">
+          <ul className="absolute z-10 w-full mt-1 max-h-48 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-md">
             {statusList.map((status, index) => (
               <li
                 key={index}
