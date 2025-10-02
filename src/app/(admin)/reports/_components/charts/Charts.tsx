@@ -15,34 +15,17 @@ import {
 // Register components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-interface UserGrowthData {
+interface GrowthData {
   month: string;
-  year: string;
-  users: number;
+  count: number;
 }
 
-const userGrowthData: UserGrowthData[] = [
-  { month: "Jan", year: "2025", users: 32 },
-  { month: "Feb", year: "2025", users: 22 },
-  { month: "Mar", year: "2025", users: 38 },
-  { month: "Apr", year: "2025", users: 28 },
-  { month: "May", year: "2025", users: 25 },
-  { month: "Jun", year: "2025", users: 32 },
-  { month: "Jul", year: "2025", users: 35 },
-  { month: "Aug", year: "2025", users: 35 },
-  { month: "Sep", year: "2025", users: 35 },
-  { month: "Oct", year: "2025", users: 35 },
-  { month: "Nov", year: "2025", users: 35 },
-  { month: "Dec", year: "2025", users: 35 },
-];
-
-// Filter by year
-const filterDataByYear = (data: UserGrowthData[], year: string) =>
-  data.filter((item) => item.year === year);
-
-const UserGrowthChart = ({ selectedYear }: { selectedYear: string }) => {
+const UserGrowthChart = ({
+  userGrowthData,
+}: {
+  userGrowthData: GrowthData[];
+}) => {
   const chartRef = useRef(null);
-  const filteredData = filterDataByYear(userGrowthData, selectedYear);
 
   // Gradient background for bars
   const createGradient = (ctx: CanvasRenderingContext2D) => {
@@ -53,10 +36,10 @@ const UserGrowthChart = ({ selectedYear }: { selectedYear: string }) => {
   };
 
   const data: ChartData<"bar"> = {
-    labels: filteredData.map((d) => d.month),
+    labels: userGrowthData.map((d) => d.month),
     datasets: [
       {
-        data: filteredData.map((d) => d.users),
+        data: userGrowthData.map((d) => d.count),
         backgroundColor: (ctx) => {
           const chart = ctx.chart;
           const { ctx: canvas } = chart;

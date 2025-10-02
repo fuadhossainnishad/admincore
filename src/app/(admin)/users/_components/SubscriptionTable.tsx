@@ -1,37 +1,38 @@
+"use client";
 import React from "react";
 import Image from "next/image";
-import { ISubscription, TPlan, TStatus } from "../page";
+import { ISubscription, TStatus } from "../page";
 
-const planStatus = {
-  "Trial Period": (
-    <div className="text-[#6B21A8] font-medium text-xs rounded-lg bg-[#F3E8FF] w-fit p-2 px-4">
-      Premium Monthly
-    </div>
-  ),
-  "Trial Period2": (
-    <div className="text-[#6B21A8] font-medium text-xs rounded-lg bg-[#F3E8FF] w-fit p-2 px-4">
-      Family Annual
-    </div>
-  ),
-  "Trial Period3": (
-    <div className="text-[#9A3412] font-medium text-xs rounded-lg bg-[#FFEDD5] w-fit p-2 px-4">
-      Free Trial
-    </div>
-  ),
-};
+// const planStatus = {
+//   [TPlan.PREMIUM]: (
+//     <div className="text-[#6B21A8] font-medium text-xs rounded-lg bg-[#F3E8FF] w-fit p-2 px-4">
+//       Premium Monthly
+//     </div>
+//   ),
+//   [TPlan.FAMILY]: (
+//     <div className="text-[#6B21A8] font-medium text-xs rounded-lg bg-[#F3E8FF] w-fit p-2 px-4">
+//       Family Annual
+//     </div>
+//   ),
+//   [TPlan.FREE]: (
+//     <div className="text-[#9A3412] font-medium text-xs rounded-lg bg-[#FFEDD5] w-fit p-2 px-4">
+//       Free Trial
+//     </div>
+//   ),
+// };
 
-const mapApiPlanToEnum = (plan: string): TPlan => {
-  switch (plan) {
-    case "Trial Period":
-      return TPlan.PREMIUM;
-    case "Trial Period1":
-      return TPlan.FAMILY;
-    case "Trial Period2":
-      return TPlan.FREE;
-    default:
-      return TPlan.PREMIUM; // Default plan in case of invalid value
-  }
-};
+// const mapApiPlanToEnum = (plan: string): TPlan => {
+//   switch (plan) {
+//     case "Trial Period":
+//       return TPlan.PREMIUM;
+//     case "Trial Period2":
+//       return TPlan.FAMILY;
+//     case "Trial Period3":
+//       return TPlan.FREE;
+//     default:
+//       return TPlan.PREMIUM; // Default plan in case of invalid value
+//   }
+// };
 
 export default function SubscriptionTable({
   subscriptions,
@@ -53,12 +54,12 @@ export default function SubscriptionTable({
         <tbody>
           {subscriptions.map((subs) => {
             // Map API plan value to TPlan enum
-            const mappedPlan = mapApiPlanToEnum(subs["Current Plan"]);
-            const planComponent = planStatus[mappedPlan] || (
-              <div className="text-[#6B7280] font-medium text-xs rounded-lg bg-[#F3F4F6] w-fit p-2 px-4">
-                Unknown Plan
-              </div>
-            );
+            // const mappedPlan = mapApiPlanToEnum(subs["Current Plan"]);
+            // const planComponent = planStatus[mappedPlan] || (
+            //   <div className="text-[#6B7280] font-medium text-xs rounded-lg bg-[#F3F4F6] w-fit p-2 px-4">
+            //     Unknown Plan
+            //   </div>
+            // );
 
             return (
               <tr
@@ -82,7 +83,11 @@ export default function SubscriptionTable({
                     </h1>
                   </div>
                 </td>
-                <td className="px-8 py-4">{planComponent}</td>
+                <td className="px-8 py-4">
+                  <div className="text-[#6B21A8] font-medium text-xs rounded-lg bg-[#F3E8FF] w-fit p-2 px-4">
+                    Premium Monthly
+                  </div>
+                </td>
                 <td className="px-8 py-4">{subs["Renewal Date"]}</td>
                 <td className="px-8 py-4">
                   {subs.status !== TStatus.TRIAL ? (

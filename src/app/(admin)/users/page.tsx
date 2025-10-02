@@ -62,9 +62,10 @@ export default function UsersPage() {
     trials_active: { value: 0, expiring_this_week: 0 },
     canceled_subscriptions: { value: 0, change: 0 },
   });
-  const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Set the number of items per page
+  
+  const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]); // Initialize as an empty array
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 5; // Set the number of items per page
 
   const handleFetch = async () => {
     const token = sessionStorage.getItem("token");
@@ -76,7 +77,8 @@ export default function UsersPage() {
 
     if (res.success) {
       setStat(res.data.stats); // Set stats data
-      setSubscriptions(res.data.results); // Set subscription data
+      // Ensure 'results' is always an array
+      setSubscriptions(res.data.results || []); // If data is missing, set an empty array
       toast.success("Subscription data fetched successfully");
     } else {
       toast.error("Error fetching subscription data");
@@ -87,16 +89,8 @@ export default function UsersPage() {
     handleFetch();
   }, []);
 
-  // Pagination logic: Get the data for the current page
-  const currentSubscriptions = subscriptions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  // Guard clause: Ensure subscriptions is an array
+  const currentSubscriptions = Array.isArray(subscriptions) ? subscriptions : [];
 
   return (
     <main className="space-y-10">
@@ -119,12 +113,14 @@ export default function UsersPage() {
       <SubscriptionTable subscriptions={currentSubscriptions} />
 
       {/* Pagination Component */}
-      <Pagination
-        currentPage={currentPage}
-        totalItems={subscriptions.length}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-      />
+      {/* 
+        <Pagination
+          currentPage={currentPage}
+          totalItems={subscriptions.length} // Make sure subscriptions is an array
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+        />
+      */}
     </main>
   );
 }

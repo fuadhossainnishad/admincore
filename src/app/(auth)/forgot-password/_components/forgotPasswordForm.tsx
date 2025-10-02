@@ -34,8 +34,8 @@ export default function ForgotPasswordForm() {
     }
 
     sessionStorage.setItem("token", res.data.token);
-    toast.success("Otp sent to your email");
-    router.push("/verify-otp");
+    toast.success("Link sent to your email");
+    router.push("/verify-link");
   };
 
   return (
@@ -68,7 +68,7 @@ export default function ForgotPasswordForm() {
         className="h-10 px-[20px] py-[10px] rounded-md bg-gradient-to-b from-[#1C75AD] to-[#083D70]  text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
         onClick={() => setSent(true)}
       >
-        {sent ? "Otp Sending..." : "Send Otp"}
+        {sent ? "Link Sending..." : "Send Link"}
       </Button>
     </form>
   );

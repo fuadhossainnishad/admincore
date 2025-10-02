@@ -1,21 +1,22 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import VerifyOtpForm from "./_components/verifyOtpForm";
 
 export default function VerifyOtpPage() {
+  const email = sessionStorage.getItem("email");
   return (
     <main className="flex flex-col items-center gap-8 text-[#5C5C5C]">
       <div className="space-y-5 text-center w-full flex flex-col items-center">
-        <h1 className="text-2xl  font-bold text-[#103F73]  ">
-          Check your email
-        </h1>
-        {/* <h1 className="text-sm font-normal text-wrap w-[60%]   ">
-          We sent otp to your contact email to verify
-        </h1> */}
+        <h1 className="text-2xl font-bold text-[#103F73]">Check your email</h1>
+        <h2 className="text-sm font-normal w-[60%]">
+          We’ve sent a reset password link to your email <span className="text-blue-500">{email}</span>.
+          Please check your inbox and follow the instructions to reset your
+          password.
+        </h2>
       </div>
 
-      <VerifyOtpForm />
+      {/* <VerifyOtpForm /> */}
 
       {/* <div className="flex gap-1 text-[14px] font-normal leading-5">
         <p className="">Didn’t receive the email?</p>

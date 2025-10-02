@@ -1,30 +1,64 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { Pencil } from "lucide-react";
 import { toast } from "sonner";
+import apiCall, { TMethods } from "@/services/apiMethodList";
+import apiList from "@/services/apiList";
+import { AxiosHeaders } from "axios";
 
 export default function Profile() {
+  const token = sessionStorage.getItem("token");
+  const headers = AxiosHeaders.from({
+    Authorization: `Bearer ${token}`,
+  });
+
   const [activeTab, setActiveTab] = useState("profile");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [profile, setProfile] = useState({
-    username: "Justyna Bronowicka",
-    email: "Camille@gmail.com",
-    contact: "+99007007007",
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
+    profile_picture_url: "/icons/profile.svg",
   });
-  const [profileImage, setProfileImage] =
-    useState<string>("/icons/profile.svg");
 
   const [passwords, setPasswords] = useState({
-    current: "",
-    new: "",
-    confirm: "",
+    current_password: "",
+    new_password: "",
+    confirm_password: "",
   });
+
+  const handleFetchProfile = async () => {
+    try {
+      const res = await apiCall(TMethods.get, apiList.getProfile, {}, headers);
+      if (res.success) {
+        setProfile({
+          first_name: res.data.first_name || "",
+          last_name: res.data.last_name || "",
+          email: res.data.email || "",
+          phone_number: res.data.phone_number || "",
+          profile_picture_url:
+            res.data.profile_picture_url || "/icons/profile.svg",
+        });
+        toast.success("Profile data fetched successfully");
+      } else {
+        toast.error("Error fetching profile data");
+      }
+    } catch (err) {
+      toast.error("Something went wrong.");
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    handleFetchProfile();
+  }, []);
 
   const handleProfileChange = (e: any) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -38,24 +72,72 @@ export default function Profile() {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setProfileImage(URL.createObjectURL(file));
+      setProfile({
+        ...profile,
+        profile_picture_url: URL.createObjectURL(file),
+      });
     }
   };
 
   const handleSaveProfile = async () => {
     try {
       const formData = new FormData();
-      formData.append("username", profile.username);
+
+      // Profile Data
+      formData.append("first_name", profile.first_name);
+      formData.append("last_name", profile.last_name);
       formData.append("email", profile.email);
-      formData.append("contact", profile.contact);
-      if (selectedFile) {
-        formData.append("profileImage", selectedFile);
+      formData.append("phone_number", profile.phone_number);
+
+      // Password Data
+      if (passwords.new_password !== passwords.confirm_password) {
+        toast.error("New password and confirm password do not match");
+        return; // Prevent submitting if passwords don't match
       }
 
-      toast.success("Profile updated successfully!");
-      //    api request to save profile data
+      if (passwords.new_password) {
+        formData.append("current_password", passwords.current_password);
+        formData.append("new_password", passwords.new_password);
+      }
 
-      toast.success("Profile updated successfully!");
+      // Profile image if selected
+      if (selectedFile) {
+        formData.append("profile_image", selectedFile);
+      }
+      console.log("Form Data:", formData);
+
+      const res = await apiCall(
+        TMethods.post,
+        apiList.updateProfile,
+        formData,
+        headers,
+        false,
+        true
+      );
+
+      if (res.success) {
+        toast.success("Profile updated successfully!");
+
+        // Reset passwords
+        setPasswords({
+          current_password: "",
+          new_password: "",
+          confirm_password: "",
+        });
+
+        // Update profile and image
+        setProfile({
+          first_name: res.data.first_name || "",
+          last_name: res.data.last_name || "",
+          email: res.data.email || "",
+          phone_number: res.data.phone_number || "",
+          profile_picture_url:
+            res.data.profile_picture_url || profile.profile_picture_url,
+        });
+        handleFetchProfile();
+      } else {
+        toast.error("Failed to update profile");
+      }
     } catch (err) {
       toast.error("Something went wrong.");
       console.error(err);
@@ -70,7 +152,7 @@ export default function Profile() {
             {/* Profile Image */}
             <div className="relative w-24 h-24 rounded-full overflow-hidden">
               <Image
-                src={profileImage}
+                src={profile.profile_picture_url}
                 alt="Profile"
                 layout="fill"
                 objectFit="cover"
@@ -96,7 +178,7 @@ export default function Profile() {
 
           <div className="space-y-2">
             <h2 className="text-start text-[26px] font-semibold">
-              Akash Sharif
+              {`${profile.first_name} ${profile.last_name}`}
             </h2>
             <p className="text-start text-xl">Admin</p>
           </div>
@@ -127,20 +209,32 @@ export default function Profile() {
       </div>
 
       {activeTab === "profile" && (
-        <div className="mt-6 space-y-4 flex flex-col ">
+        <div className="mt-6 space-y-4 flex flex-col">
           <h3 className="text-center text-2xl font-medium">
             Edit Your Profile
           </h3>
-          <div className="space-y-2 ">
-            <Label>User Name</Label>
+          <div className="space-y-2">
+            <Label>First Name</Label>
             <Input
-              value={profile.username}
+              value={profile.first_name}
               onChange={handleProfileChange}
-              name="username"
-              placeholder="Enter your username"
+              name="first_name"
+              placeholder="Enter your first name"
               className="border-[1px] border-[#E5E7EB] appearance-none focus:outline-none"
             />
           </div>
+
+          <div className="space-y-2">
+            <Label>Last Name</Label>
+            <Input
+              value={profile.last_name}
+              onChange={handleProfileChange}
+              name="last_name"
+              placeholder="Enter your last name"
+              className="border-[1px] border-[#E5E7EB] appearance-none focus:outline-none"
+            />
+          </div>
+
           <div className="space-y-2">
             <Label>Email</Label>
             <Input
@@ -155,15 +249,16 @@ export default function Profile() {
           <div className="space-y-2">
             <Label>Contact No</Label>
             <Input
-              value={profile.contact}
+              value={profile.phone_number}
               onChange={handleProfileChange}
-              name="contact"
+              name="phone_number"
               placeholder="+1234567890"
               className="border-[1px] border-[#E5E7EB] appearance-none focus:outline-none"
             />
           </div>
+
           <Button
-            className=" bg-[#9333EA] hover:bg-[#9333EA]/80 text-white w-fit self-center"
+            className="bg-[#9333EA] hover:bg-[#9333EA]/80 text-white w-fit self-center"
             onClick={handleSaveProfile}
           >
             Save Changes
@@ -178,8 +273,8 @@ export default function Profile() {
             <Label>Current Password</Label>
             <Input
               type="password"
-              name="current"
-              value={passwords.current}
+              name="current_password"
+              value={passwords.current_password}
               onChange={handlePasswordChange}
               className="border-[1px] border-[#E5E7EB] appearance-none focus:outline-none"
             />
@@ -188,8 +283,8 @@ export default function Profile() {
             <Label>New Password</Label>
             <Input
               type="password"
-              name="new"
-              value={passwords.new}
+              name="new_password"
+              value={passwords.new_password}
               onChange={handlePasswordChange}
               className="border-[1px] border-[#E5E7EB] appearance-none focus:outline-none"
             />
@@ -198,13 +293,17 @@ export default function Profile() {
             <Label>Confirm Password</Label>
             <Input
               type="password"
-              name="confirm"
-              value={passwords.confirm}
+              name="confirm_password"
+              value={passwords.confirm_password}
               onChange={handlePasswordChange}
               className="border-[1px] border-[#E5E7EB] appearance-none focus:outline-none"
             />
           </div>
-          <Button className=" bg-[#9333EA] hover:bg-[#9333EA]/80 text-white self-center">
+
+          <Button
+            className="bg-[#9333EA] hover:bg-[#9333EA]/80 text-white self-center"
+            onClick={handleSaveProfile}
+          >
             Save Changes
           </Button>
         </div>

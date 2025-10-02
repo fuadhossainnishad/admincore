@@ -9,26 +9,31 @@ const icons = {
 };
 
 export default function SubscriptionCard({ stats }: { stats: IStats }) {
+  // Safely accessing stats and providing default values if undefined
+  const totalSubscribers = stats?.total_subscribers || { value: 0, change: 0 };
+  const activeTrials = stats?.trials_active || { value: 0, expiring_this_week: 0 };
+  const canceledSubscriptions = stats?.canceled_subscriptions || { value: 0, change: 0 };
+
   const cardData = [
     {
       title: "Total Subscribers",
-      value: stats.total_subscribers.value,
-      change: `${stats.total_subscribers.change}% from last month`,
-      status: stats.total_subscribers.change > 0 ? "up" : "down",
+      value: totalSubscribers.value,
+      change: `${totalSubscribers.change}% from last month`,
+      status: totalSubscribers.change > 0 ? "up" : "down",
       icon: "/icons/users.svg",
     },
     {
       title: "Active Trials",
-      value: stats.trials_active.value,
-      change: `${stats.trials_active.expiring_this_week} expiring this week`,
+      value: activeTrials.value,
+      change: `${activeTrials.expiring_this_week} expiring this week`,
       status: "trial", // This could be customized depending on actual data
       icon: "/icons/trialSubscription.svg",
     },
     {
       title: "Canceled Subscriptions",
-      value: stats.canceled_subscriptions.value,
-      change: `${stats.canceled_subscriptions.change}% from last month`,
-      status: stats.canceled_subscriptions.change > 0 ? "up" : "down",
+      value: canceledSubscriptions.value,
+      change: `${canceledSubscriptions.change}% from last month`,
+      status: canceledSubscriptions.change > 0 ? "up" : "down",
       icon: "/icons/cancelSubscription.svg",
     },
   ];

@@ -1,19 +1,50 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import React, { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
+import { ISettings } from "../page"; // Assuming the ISettings interface is in the same directory
 
-export default function AdminSettingsCard() {
+export default function AdminSettingsCard({
+  settingsData,
+  languages,
+  timezones,
+  onSave,
+}: {
+  settingsData: ISettings;
+  languages: { code: string; name: string }[];
+  timezones: string[];
+  onSave: (updatedData: ISettings) => void;
+}) {
   const [show, setShow] = useState(true);
-  const [image, setImage] = useState<string | null>("/images/logo.png");
+  const [image, setImage] = useState<string | null>(
+    settingsData.application_logo_url || "/images/logo.png"
+  ); // Use the logo URL from API or fallback to default
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    setValue("name", settingsData.application_name);
+    setValue("language", settingsData.default_language);
+    setValue("timeZone", settingsData.timezone);
+
+    if (settingsData.application_logo_url) {
+      setImage(settingsData.application_logo_url);
+    }
+  }, [settingsData, setValue]);
+
   const onSubmit = (data: FieldValues) => {
-    console.log(data);
+    const updatedData: ISettings = {
+      ...settingsData,
+      application_name: data.name,
+      default_language: data.language,
+      timezone: data.timeZone,
+    };
+    onSave(updatedData); // Call onSave with updated data
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +132,6 @@ export default function AdminSettingsCard() {
                     alt="upload icon"
                     height={12}
                     width={12}
-                    className=""
                   />
                   <span className="text-sm font-medium">Upload New Logo</span>
                 </label>
@@ -131,14 +161,19 @@ export default function AdminSettingsCard() {
                 Default Language
               </label>
               <div className="flex justify-between border-[1px] border-[#E5E7EB] rounded-lg px-3 py-2">
-                <input
-                  type="text"
+                <select
                   id="language"
-                  className="appearance-none focus:outline-none text-base font-normal rounded-lg"
+                  className="appearance-none focus:outline-none text-base font-normal w-full px-3 py-2"
                   {...register("language", {
                     required: "This field is required",
                   })}
-                />
+                >
+                  {languages.map((language) => (
+                    <option key={language.code} value={language.code}>
+                      {language.name}
+                    </option>
+                  ))}
+                </select>
                 <Image
                   src="/icons/downArrow3.svg"
                   alt="downArrow"
@@ -147,9 +182,10 @@ export default function AdminSettingsCard() {
                   className="rounded-lg"
                 />
               </div>
-              {errors.logo && (
+
+              {errors.language && (
                 <span className="text-red-500 text-sm">
-                  {errors.logo.message as string}
+                  {errors.language.message as string}
                 </span>
               )}
             </div>
@@ -161,14 +197,19 @@ export default function AdminSettingsCard() {
                 Time Zone
               </label>
               <div className="flex justify-between border-[1px] border-[#E5E7EB] rounded-lg px-3 py-2">
-                <input
-                  type="text"
+                <select
                   id="timeZone"
-                  className="appearance-none focus:outline-none text-base font-normal rounded-lg"
+                  className="appearance-none focus:outline-none text-base font-normal w-full px-3 py-2"
                   {...register("timeZone", {
                     required: "This field is required",
                   })}
-                />
+                >
+                  {timezones.map((timezone) => (
+                    <option key={timezone} value={timezone}>
+                      {timezone}
+                    </option>
+                  ))}
+                </select>
                 <Image
                   src="/icons/downArrow3.svg"
                   alt="downArrow"
@@ -177,9 +218,10 @@ export default function AdminSettingsCard() {
                   className="rounded-lg"
                 />
               </div>
-              {errors.logo && (
+
+              {errors.timeZone && (
                 <span className="text-red-500 text-sm">
-                  {errors.logo.message as string}
+                  {errors.timeZone.message as string}
                 </span>
               )}
             </div>

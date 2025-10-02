@@ -1,15 +1,13 @@
 "use client";
-import Image from "next/image";
 import React, { useState } from "react";
+import Image from "next/image";
 import { TPlan, TStatus } from "../page";
 
 export default function SearchFilter() {
   const [showPlanList, setShowPlanList] = useState<boolean>(false);
   const [showStatusList, setShowStatusList] = useState<boolean>(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>("All Plans");
-  const [selectedStatus, setSelectedStatus] = useState<string | null>(
-    "All Status"
-  );
+  const [selectedStatus, setSelectedStatus] = useState<string | null>("All Status");
 
   const plansWithAll = ["All Plans", ...Object.values(TPlan)];
   const statusList = ["All Status", ...Object.values(TStatus)];
@@ -39,11 +37,9 @@ export default function SearchFilter() {
           className="flex cursor-pointer"
           onClick={() => setShowPlanList(!showPlanList)}
         >
-          <input
-            placeholder={selectedPlan!}
-            value={selectedPlan!}
-            className="text-[#000000] text-base leading-6 font-normal border-none outline-none focus:outline-none focus:ring-0 grow"
-          />
+          <div className="text-[#000000] text-base leading-6 font-normal grow">
+            {selectedPlan}
+          </div>
           <Image
             src="/icons/downArrow3.svg"
             alt="downArrow"
@@ -73,11 +69,9 @@ export default function SearchFilter() {
           className="flex cursor-pointer"
           onClick={() => setShowStatusList(!showStatusList)}
         >
-          <input
-            placeholder={selectedStatus!}
-            value={selectedStatus!}
-            className="text-[#ADAEBC] text-base leading-6 font-normal border-none outline-none focus:outline-none focus:ring-0 grow"
-          />
+          <div className="text-[#ADAEBC] text-base leading-6 font-normal grow">
+            {selectedStatus}
+          </div>
           <Image
             src="/icons/downArrow3.svg"
             alt="search"

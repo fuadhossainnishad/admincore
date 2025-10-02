@@ -1,17 +1,54 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import StoriesTable from "./_components/StoriesTable";
 import UserGrowthChart from "./_components/charts/Charts";
-// import YearPicker from "./_components/YearPicker"; // Import YearPicker component
+import { AxiosHeaders } from "axios";
+import apiCall, { TMethods } from "@/services/apiMethodList";
+import apiList from "@/services/apiList";
+import { toast } from "sonner";
+
+// Define the interface for the API response data
+export interface ITopStory {
+  theme: string;
+  read_count: number;
+  likes_count: number;
+  shares_count: number;
+  tags: string;
+  reading_time: string;
+}
 
 export default function ReportsPage() {
-  // Set the default selected year to the current year
-  const selectedYear = new Date().getFullYear().toString();
+  const [userGrowthOverTime, setUserGrowthOverTime] = useState<
+    { month: string; count: number }[]
+  >([]);
+  const [storiesCreatedOverTime, setStoriesCreatedOverTime] = useState<
+    { month: string; count: number }[]
+  >([]);
+  const [topPerformingStories, setTopPerformingStories] = useState<ITopStory[]>(
+    []
+  );
 
-  // Handle year change
-  // const handleYearChange = (year: string) => {
-  //   setSelectedYear(year);
-  // };
+  const handleFetch = async () => {
+    const token = sessionStorage.getItem("token");
+    const headers = AxiosHeaders.from({
+      Authorization: `Bearer ${token}`,
+    });
+
+    const res = await apiCall(TMethods.get, apiList.reports, {}, headers);
+
+    if (res.success) {
+      setUserGrowthOverTime(res.data.user_growth_over_time);
+      setStoriesCreatedOverTime(res.data.stories_created_over_time); 
+      setTopPerformingStories(res.data.top_performing_stories); 
+      toast.success("Subscription data fetched successfully");
+    } else {
+      toast.error("Error fetching subscription data");
+    }
+  };
+
+  useEffect(() => {
+    handleFetch();
+  }, []);
 
   return (
     <main className="space-y-10">
@@ -28,30 +65,21 @@ export default function ReportsPage() {
             <h1 className="text-[#111827] font-semibold text-lg">
               User Growth Over Time
             </h1>
-            {/* <YearPicker
-              selectedYear={selectedYear}
-              onYearChange={handleYearChange}
-            /> */}
           </div>
-
-          <UserGrowthChart selectedYear={selectedYear} />
+          <UserGrowthChart userGrowthData={userGrowthOverTime} />
         </section>
+
         <section className="flex-1 border-[1px] border-[#E5E7EB] bg-white p-5 rounded-lg shadow space-y-4">
           <div className="flex justify-between">
             <h1 className="text-[#111827] font-semibold text-lg">
-              Stories Created by Age Group
+              Stories Created Over Time
             </h1>
-            {/* <YearPicker
-              selectedYear={selectedYear}
-              onYearChange={handleYearChange}
-            /> */}
           </div>
-
-          <UserGrowthChart selectedYear={selectedYear} />
+          <UserGrowthChart userGrowthData={storiesCreatedOverTime} />
         </section>
       </section>
 
-      <StoriesTable />
+      <StoriesTable topPerformingStories={topPerformingStories} />
     </main>
   );
 }
