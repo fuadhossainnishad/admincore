@@ -8,21 +8,25 @@ export default function DashboardCard({ stats }: { stats: IStats }) {
       value: stats.total_users?.value || 0,
       title: `${stats.total_users?.change || 0}% from last month`,
       status: stats.total_users?.change > 0 ? "up" : "down",
+      icons: "/icons/users.svg",
     },
     "Active Subscription": {
       value: stats.active_subscriptions?.value || 0,
       title: `${stats.active_subscriptions?.change || 0}% from last month`,
       status: stats.active_subscriptions?.change > 0 ? "up" : "down",
+      icons: "/icons/subscription.svg",
     },
     "Stories Created": {
       value: stats.stories_created?.value || 0,
       title: `${stats.stories_created?.change || 0}% from last month`,
       status: stats.stories_created?.change > 0 ? "up" : "down",
+      icons: "/icons/stories.svg",
     },
     "Reported Content": {
       value: stats.reported_content?.value || 0,
       title: `${stats.reported_content?.change || 0}% from last month`,
       status: stats.reported_content?.change > 0 ? "up" : "down",
+      icons: "/icons/content.svg",
     },
   };
 
@@ -57,7 +61,12 @@ export default function DashboardCard({ stats }: { stats: IStats }) {
               </p>
             </div>
           </section>
-          <Image src={`/icons/${key.toLowerCase().replace(/\s+/g, '-')}.svg`} alt={key} height={52} width={52} />
+          <Image
+            src={data.icons}
+            alt={key}
+            height={52}
+            width={52}
+          />
         </section>
       ))}
     </main>
